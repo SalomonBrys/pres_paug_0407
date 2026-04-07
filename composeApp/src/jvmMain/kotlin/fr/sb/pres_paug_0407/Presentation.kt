@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -29,8 +30,14 @@ import kotlin.math.min
 
 val slideSize = IntSize(640, 360)
 
+val slides: List<@Composable ColumnScope.() -> Unit> = listOf(
+    { Slide1() },
+    { Slide2() },
+    { Slide3() },
+)
+
 @Composable
-fun Presentation() {
+fun Presentation(slide: Int) {
     MaterialTheme(
         colorScheme = darkColorScheme(),
     ) {
@@ -61,18 +68,43 @@ fun Presentation() {
                             .size(slideSize.width.dp, slideSize.height.dp)
                             .border(2.dp, Color.White)
                     ) {
-                        Text(
-                            text = "Compose beyond UI:",
-                            style = MaterialTheme.typography.headlineMedium,
-                        )
-                        Text(
-                            text = "Display and Print.",
-                            style = MaterialTheme.typography.headlineSmall,
-                        )
+                        slides[slide]()
                     }
                 }
             }
         }
 
     }
+}
+
+@Composable
+fun ColumnScope.Slide1() {
+    Text(
+        text = "Compose beyond UI:",
+        style = MaterialTheme.typography.headlineMedium,
+    )
+    Text(
+        text = "Display and Print.",
+        style = MaterialTheme.typography.headlineSmall,
+    )
+}
+
+@Composable
+fun ColumnScope.Slide2() {
+    Text(
+        text = "Second slide!",
+        style = MaterialTheme.typography.bodyLarge,
+    )
+}
+
+@Composable
+fun ColumnScope.Slide3() {
+    Text(
+        text = "https://github.com/SalomonBrys/pres_paug_0407",
+        style = MaterialTheme.typography.bodyLarge,
+    )
+    Text(
+        text = "😍",
+        style = MaterialTheme.typography.bodyLarge,
+    )
 }
