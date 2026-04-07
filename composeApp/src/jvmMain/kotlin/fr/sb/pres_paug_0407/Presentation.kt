@@ -1,6 +1,12 @@
 package fr.sb.pres_paug_0407
 
-import androidx.compose.foundation.border
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,10 +26,10 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import kotlin.math.min
@@ -61,14 +67,24 @@ fun Presentation(slide: Int) {
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .size(slideSize.width.dp, slideSize.height.dp)
-                            .border(2.dp, Color.White)
-                    ) {
-                        slides[slide]()
+                    AnimatedContent(
+                        targetState = slide,
+                        transitionSpec = {
+                            val direction = if (targetState > initialState) 1 else -1
+                            ContentTransform(
+                                targetContentEnter = fadeIn(tween(600)) + slideIn(tween(600), initialOffset = { IntOffset(it.width / 6 * direction, 0) }),
+                                initialContentExit = fadeOut(tween(600)) + slideOut(tween(600), targetOffset = { IntOffset(-it.width / 6 * direction, 0) }),
+                            )
+                        }
+                    ) { targetSlide ->
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .size(slideSize.width.dp, slideSize.height.dp)
+                        ) {
+                            slides[targetSlide]()
+                        }
                     }
                 }
             }
